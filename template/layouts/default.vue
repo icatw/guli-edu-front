@@ -143,7 +143,6 @@ import "~/assets/css/theme.css";
 import "~/assets/css/global.css";
 import "~/assets/css/web.css";
 import cookie from 'js-cookie'
-import userApi from '@/api/login'
 
 export default {
   data() {

@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^1.1.2",
-    "element-ui": "^2.15.10",
-    "js-cookie": "^3.0.1",
-    "vue-qriously": "^1.1.1"
-  }
-}
