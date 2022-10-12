@@ -143,6 +143,7 @@ import "~/assets/css/theme.css";
 import "~/assets/css/global.css";
 import "~/assets/css/web.css";
 import cookie from 'js-cookie'
+import userApi from "~/api/login";
 
 export default {
   data() {
@@ -159,23 +160,39 @@ export default {
     }
   },
   created() {
+    this.token = this.$route.query.token
+    if (this.token) {
+      this.wxLogin()
+    }
     this.showInfo()
   },
   methods: {
     showInfo() {
-    //debugger
+      //debugger
       var jsonStr = cookie.get("guli_ucenter");
-    //alert(jsonStr)
+      //alert(jsonStr)
       if (jsonStr) {
         this.loginInfo = JSON.parse(jsonStr)
       }
     },
     logout() {
-    //debugger
-      cookie.set('guli_ucenter', "", {domain: 'localhost'})
-      cookie.set('guli_token', "", {domain: 'localhost'})
-    //跳转页面
-      window.location.href = "/"
+      //debugger
+      cookie.set('guli_ucenter', '', {domain: 'localhost'})
+      cookie.set('guli_token', '', {domain: 'localhost'})
+      //跳转页面
+      window.location.href = '/'
+    },
+    wxLogin() {
+      if (this.token == '') return
+//把token存在cookie中、也可以放在localStorage中
+      cookie.set('guli_token', this.token, {domain: 'localhost'})
+      cookie.set('guli_ucenter', '', {domain: 'localhost'})
+//登录成功根据token获取用户信息
+      userApi.getLoginInfo().then(response => {
+        this.loginInfo = response.data.data.userInfo
+//将用户信息记录cookie
+        cookie.set('guli_ucenter', JSON.stringify(this.loginInfo), {domain: 'localhost'})
+      })
     }
   }
 }
