@@ -33,13 +33,17 @@
                 <a class="c-fff vam" title="收藏" href="#">收藏</a>
               </span>
             </section>
-            <section class="c-attr-mt">
+            <section v-if="isBuy || Number(courseWebVo.price) === 0" class="c-attr-mt">
               <a href="#" title="立即观看" class="comm-btn c-btn-3">立即观看</a>
             </section>
+            <section v-else class="c-attr-mt">
+              <a @click="createOrders()" href="#" title="立即购买" class="comm-btn c-btn-3">立即购买</a>
+            </section>
+
           </section>
         </aside>
         <aside class="thr-attr-box">
-          <ol class="thr-attr-ol clearfix">
+          <ol class="thr-attr-ol">
             <li>
               <p>&nbsp;</p>
               <aside>
@@ -290,12 +294,16 @@
 <script>
 import courseApi from '@/api/course'
 import comment from "@/api/commonedu"
+import ordersApi from "@/api/order";
 
 export default {
+  asyncData({params, error}) {
+    return {courseId: params.id}
+  },
   data() {
     return {
       courseWebVo: {},
-      chapterList: [],
+      chapterVideoList: [],
       courseId: "",
       data: {},
       page: 1,
@@ -306,10 +314,11 @@ export default {
         courseId: "",
         teacherId: "",
       },
-      isbuyCourse: false,
+      isBuy: false,
     };
   },
   created() {
+    this.initCourseInfo()
     this.initComment()
   },
   methods: {
@@ -342,17 +351,37 @@ export default {
         this.data = response.data.data;
       });
     },
+    //生成订单
+    createOrders() {
+      ordersApi.createOrders(this.courseId)
+        .then(response => {
+          //获取返回订单号
+          //生成订单之后，跳转订单显示页面
+          this.$router.push({path: '/order/' + response.data.data.orderId})
+        })
+    },
+    initCourseInfo() {
+      courseApi.getCourseInfo(this.courseId)
+        .then(response => {
+          this.courseWebVo = response.data.data.courseWebVo
+          this.chapterVideoList = response.data.data.chapterVideoList
+          this.isBuy = response.data.data.isBuy
+          this.courseId = response.data.data.courseWebVo.id
+          this.teacherId = response.data.data.courseWebVo.teacherId
+        })
+    }
   },
-  asyncData({params, error}) {
-    return courseApi.getCourseInfo(params.id)
-      .then(response => {
-        return {
-          courseWebVo: response.data.data.courseWebVo,
-          chapterVideoList: response.data.data.chapterVideoList,
-          courseId: response.data.data.courseWebVo.id,
-          teacherId: response.data.data.courseWebVo.teacherId
-        }
-      })
-  }
+  //
+  // asyncData({params, error}) {
+  //   return courseApi.getCourseInfo(params.id)
+  //     .then(response => {
+  //       return {
+  //         courseWebVo: response.data.data.courseWebVo,
+  //         chapterVideoList: response.data.data.chapterVideoList,
+  //         courseId: response.data.data.courseWebVo.id,
+  //         teacherId: response.data.data.courseWebVo.teacherId
+  //       }
+  //     })
+  // }
 };
 </script>
