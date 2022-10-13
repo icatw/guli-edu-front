@@ -60,9 +60,10 @@
       <div class="more-sign">
         <h6>社交帐号直接注册</h6>
         <ul>
-          <li><a id="weixin" class="weixin" target="_blank" href="http://huaan.free.idcfengye.com/api/ucenter/wx/login"><i
+          <li><a id="weixin" class="weixin" target="_blank" href="http://localhost:8160/api/ucenter/wx/login"><i
             class="iconfont icon-weixin"/></a></li>
-          <li><a id="qq" class="qq" target="_blank" href="#"><i class="iconfont icon-qq"/></a></li>
+          <li><a id="qq" class="qq" target="_blank" href="http://localhost:8160/api/ucenter/gitee/login"><i
+            class="iconfont icon-gitee"/></a></li>
         </ul>
       </div>
     </div>
@@ -95,14 +96,14 @@ export default {
     //注册提交的方法
     submitRegister() {
       registerApi.submitRegister(this.params).then(response => {
-            //提示注册成功
-            this.$message({
-              type: 'success',
-              message: "注册成功"
-            })
-            //跳转登录页面
-            this.$router.push({path: '/login'})
+        //提示注册成功
+        this.$message({
+          type: 'success',
+          message: "注册成功"
         })
+        //跳转登录页面
+        this.$router.push({path: '/login'})
+      })
     },
     timeDown() {
       let result = setInterval(() => {
